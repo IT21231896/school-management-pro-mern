@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import Swal from 'sweetalert2'; // Import SweetAlert2
 import '../styles/AdminProfile.css';
 
 const AdminProfile = () => {
@@ -39,21 +39,37 @@ const AdminProfile = () => {
     e.preventDefault();
     setError('');
 
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.put(
-        'http://localhost:5000/api/user/profile',
-        profile,
-        {
-          headers: { Authorization: `Bearer ${token}` },
+    // Swal Confirmation Dialog
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to update your profile?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, update it!',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const token = localStorage.getItem('token');
+          const response = await axios.put(
+            'http://localhost:5000/api/user/profile',
+            profile,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          // Success Message
+          Swal.fire('Updated!', 'Your profile has been updated.', 'success');
+          setProfile(response.data);
+        } catch (error) {
+          setError('Failed to update profile');
+          console.error(error);
+          // Error Message
+          Swal.fire('Error!', 'Failed to update profile.', 'error');
         }
-      );
-      alert('Profile updated successfully!');
-      setProfile(response.data);
-    } catch (error) {
-      setError('Failed to update profile');
-      console.error(error);
-    }
+      }
+    });
   };
 
   if (loading) {

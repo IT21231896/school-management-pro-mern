@@ -46,7 +46,7 @@ const Login = () => {
           value={formData.email}
           onChange={handleChange}
           required
-        />
+        /> 
         <input
           type="password"
           name="password"

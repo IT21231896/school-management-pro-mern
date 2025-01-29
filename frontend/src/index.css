@@ -78,7 +78,7 @@ button:focus-visible {
   text-align: center;
 }
 .signup-container input {
-  width: 100%;
+  width: 380px;
   padding: 10px;
   margin: 10px 0;
   border: 1px solid #ccc;
@@ -108,7 +108,7 @@ button:focus-visible {
   text-align: center;
 }
 .login-container input {
-  width: 100%;
+  width: 380px;
   padding: 10px;
   margin: 10px 0;
   border: 1px solid #ccc;
