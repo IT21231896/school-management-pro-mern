@@ -8,6 +8,8 @@ import Teachers from './pages/Teachers';
 import Staff from './pages/Staff';
 import Facilities from './pages/Facilities';
 import Classrooms from './pages/Classrooms';
+import Home from './pages/Home';
+import AdminProfile from './pages/AdminProfile';
 
 const App = () => {
   return (
@@ -16,11 +18,13 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />}>
+          <Route path="home" element={<Home />} />
           <Route path="students" element={<Students />} />
           <Route path="teachers" element={<Teachers />} />
           <Route path="staff" element={<Staff />} />
           <Route path="facilities" element={<Facilities />} />
           <Route path="classrooms" element={<Classrooms />} />
+          <Route path="adminprofile" element={<AdminProfile />} />
         </Route>
         <Route path="/" element={<Login />} />
       </Routes>

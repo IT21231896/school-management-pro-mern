@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Swal from 'sweetalert2';
+
 import '../styles/Management.css';
 
 const Classrooms = () => {
@@ -10,34 +13,97 @@ const Classrooms = () => {
   });
   const [isEditing, setIsEditing] = useState(false);
 
+  // Fetch classrooms from API
+  const fetchClassrooms = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/classrooms');
+      setClassrooms(response.data);
+    } catch (error) {
+      console.error('Error fetching classrooms:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchClassrooms();
+  }, []);
+
+  // Handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isEditing) {
-      // Update classroom
-      setClassrooms(
-        classrooms.map((classroom) =>
-          classroom.id === formData.id ? formData : classroom
-        )
-      );
-      setIsEditing(false);
-    } else {
-      // Add new classroom
-      setClassrooms([...classrooms, { ...formData, id: Date.now() }]);
+    try {
+      if (isEditing) {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: 'Do you want to update this classroom?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, update it!',
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            const response = await axios.put(
+              `http://localhost:5000/api/classrooms/${formData.id}`,
+              formData
+            );
+            if (response.status === 200) {
+              Swal.fire('Updated!', 'Classroom updated successfully.', 'success');
+              setIsEditing(false);
+              setFormData({ id: '', name: '', capacity: '' });
+              fetchClassrooms();
+            }
+          }
+        });
+      } else {
+        const response = await axios.post('http://localhost:5000/api/classrooms', formData);
+        if (response.status === 201) {
+          Swal.fire('Added!', 'New Classroom added successfully!', 'success');
+          setFormData({ id: '', name: '', capacity: '' });
+          fetchClassrooms();
+        }
+      }
+    } catch (error) {
+      console.error('Error adding/updating classroom:', error);
+      Swal.fire('Error!', 'Something went wrong.', 'error');
     }
-    setFormData({ id: '', name: '', capacity: '' });
   };
 
+  // Handle edit
   const handleEdit = (classroom) => {
-    setFormData(classroom);
+    setFormData({
+      id: classroom._id,
+      name: classroom.name,
+      capacity: classroom.capacity,
+    });
     setIsEditing(true);
   };
 
-  const handleDelete = (id) => {
-    setClassrooms(classrooms.filter((classroom) => classroom.id !== id));
+  // Delete a classroom with confirmation
+  const handleDelete = async (id) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you really want to delete this classroom? This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(`http://localhost:5000/api/classrooms/${id}`);
+          setClassrooms((prevClassrooms) => prevClassrooms.filter((classroom) => classroom._id !== id));
+          Swal.fire('Deleted!', 'The classroom has been deleted.', 'success');
+        } catch (error) {
+          console.error('Error deleting classroom:', error);
+          Swal.fire('Error!', 'Failed to delete the classroom.', 'error');
+        }
+      }
+    });
   };
 
   return (
@@ -74,12 +140,12 @@ const Classrooms = () => {
         </thead>
         <tbody>
           {classrooms.map((classroom) => (
-            <tr key={classroom.id}>
+            <tr key={classroom._id || classroom.id}>
               <td>{classroom.name}</td>
               <td>{classroom.capacity}</td>
               <td>
                 <button onClick={() => handleEdit(classroom)}>Edit</button>
-                <button onClick={() => handleDelete(classroom.id)}>
+                <button onClick={() => handleDelete(classroom._id || classroom.id)}>
                   Delete
                 </button>
               </td>
