@@ -1,0 +1,31 @@
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import connectDB from "./config/db.js";
+
+import authRoutes from "./routes/authRoutes.js";
+import classroomRoutes from "./routes/classroomRoutes.js";
+import facilityRoutes from "./routes/facilityRoutes.js";
+import staffRoutes from "./routes/staffRoutes.js";
+import studentRoutes from "./routes/studentRoutes.js";
+import teacherRoutes from "./routes/teacherRoutes.js";
+
+dotenv.config();
+connectDB();
+
+const app = express();
+
+app.use(express.json());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cookieParser());
+
+app.use("/api/auth", authRoutes);
+app.use("/api/classrooms", classroomRoutes);
+app.use("/api/facilities", facilityRoutes);
+app.use("/api/staff", staffRoutes);
+app.use("/api/students", studentRoutes);
+app.use("/api/teachers", teacherRoutes);
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
