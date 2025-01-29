@@ -68,6 +68,13 @@ button:focus-visible {
 }
 */
 
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f9;
+  color: #333;
+}
+
 /*sign up page*/
 .signup-container {
   max-width: 400px;
