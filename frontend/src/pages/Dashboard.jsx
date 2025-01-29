@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { FaUserGraduate, FaChalkboardTeacher, FaUsers, FaBuilding, FaDoorOpen, FaSignOutAlt, FaUser } from 'react-icons/fa';
-import { MdHome } from "react-icons/md";
+import { FaUserGraduate, FaChalkboardTeacher, FaUsers, FaBuilding, FaDoorOpen, FaSignOutAlt, FaUser , FaHome} from 'react-icons/fa';
 import '../styles/Dashboard.css';
 
 const Dashboard = () => {
@@ -20,7 +19,7 @@ const Dashboard = () => {
           <ul>
             <li>
               <Link to="/dashboard/home">
-                <MdHome /> Home
+                <FaHome /> Home
               </Link>
             </li>
             <li>
