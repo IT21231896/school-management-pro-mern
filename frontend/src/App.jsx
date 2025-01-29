@@ -9,6 +9,7 @@ import Staff from './pages/Staff';
 import Facilities from './pages/Facilities';
 import Classrooms from './pages/Classrooms';
 import Home from './pages/Home';
+import AdminProfile from './pages/AdminProfile';
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
           <Route path="staff" element={<Staff />} />
           <Route path="facilities" element={<Facilities />} />
           <Route path="classrooms" element={<Classrooms />} />
+          <Route path="adminprofile" element={<AdminProfile />} />
         </Route>
         <Route path="/" element={<Login />} />
       </Routes>

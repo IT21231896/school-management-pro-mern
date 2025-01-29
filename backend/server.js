@@ -11,6 +11,7 @@ import staffRoutes from "./routes/staffRoutes.js";
 import studentRoutes from "./routes/studentRoutes.js";
 import teacherRoutes from "./routes/teacherRoutes.js";
 import homeRoutes from "./routes/homeRoutes.js"
+import userRoutes from "./routes/userRoutes.js"
 
 dotenv.config();
 connectDB();
@@ -28,6 +29,7 @@ app.use("/api/staff", staffRoutes);
 app.use("/api/students", studentRoutes);
 app.use("/api/teachers", teacherRoutes);
 app.use("/api/home", homeRoutes);
+app.use("/api/user", userRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`));
