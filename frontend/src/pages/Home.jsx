@@ -67,7 +67,7 @@ const Home = () => {
       </section>
 
       <footer className="home-footer">
-        <p>&copy; 2023 Our School. All rights reserved.</p>
+        <p>&copy; 2025 Our School. All rights reserved.</p>
       </footer>
     </div>
   );
