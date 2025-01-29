@@ -43,23 +43,23 @@ const Home = () => {
       <section className="quick-links">
         <h2>Management Overview</h2>
         <div className="links-grid">
-          <Link to="/students" className="link-card">
+          <Link to="/dashboard/students" className="link-card">
             <h3>Students</h3>
             <p>Total Students: <span className="count">{counts.students}</span></p>
           </Link>
-          <Link to="/teachers" className="link-card">
+          <Link to="/dashboard/teachers" className="link-card">
             <h3>Teachers</h3>
             <p>Total Teachers: <span className="count">{counts.teachers}</span></p>
           </Link>
-          <Link to="/staff" className="link-card">
+          <Link to="/dashboard/staff" className="link-card">
             <h3>Staff</h3>
             <p>Total Staff: <span className="count">{counts.staff}</span></p>
           </Link>
-          <Link to="/classrooms" className="link-card">
+          <Link to="/dashboard/classrooms" className="link-card">
             <h3>Classrooms</h3>
             <p>Total Classrooms: <span className="count">{counts.classrooms}</span></p>
           </Link>
-          <Link to="/facilities" className="link-card">
+          <Link to="/dashboard/facilities" className="link-card">
             <h3>Facilities</h3>
             <p>Total Facilities: <span className="count">{counts.facilities}</span></p>
           </Link>

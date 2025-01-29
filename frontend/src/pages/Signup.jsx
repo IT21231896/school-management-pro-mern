@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Signup = () => {
@@ -7,7 +7,11 @@ const Signup = () => {
     name: '',
     email: '',
     password: '',
+    confirmPassword: '',
   });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -15,19 +19,37 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    // Basic validation
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await axios.post('http://localhost:5000/api/admin/signup', formData);
+      const response = await axios.post('http://localhost:5000/api/admin/signup', {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
       console.log(response.data);
       alert('Admin registered successfully!');
+      navigate('/login'); // Redirect to login page after successful signup
     } catch (error) {
       console.error(error);
-      alert('Registration failed!');
+      setError(error.response?.data?.message || 'Registration failed!');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="signup-container">
       <h2>Admin Signup</h2>
+      {error && <p className="error-message">{error}</p>}
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -51,9 +73,21 @@ const Signup = () => {
           placeholder="Password"
           value={formData.password}
           onChange={handleChange}
+          minLength="6"
           required
         />
-        <button type="submit">Sign Up</button>
+        <input
+          type="password"
+          name="confirmPassword"
+          placeholder="Confirm Password"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          minLength="6"
+          required
+        />
+        <button type="submit" disabled={loading}>
+          {loading ? 'Signing Up...' : 'Sign Up'}
+        </button>
       </form>
       <p>
         Already have an account? <Link to="/login">Login</Link>
