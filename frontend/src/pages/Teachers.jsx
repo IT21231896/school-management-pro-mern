@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Swal from 'sweetalert2';
+
 import '../styles/Management.css';
 
 const Teachers = () => {
@@ -10,34 +13,95 @@ const Teachers = () => {
   });
   const [isEditing, setIsEditing] = useState(false);
 
+  // Fetch teachers from API
+  const fetchTeachers = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/teachers');
+      setTeachers(response.data);
+    } catch (error) {
+      console.error('Error fetching teachers:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTeachers();
+  }, []);
+
+  // Handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isEditing) {
-      // Update teacher
-      setTeachers(
-        teachers.map((teacher) =>
-          teacher.id === formData.id ? formData : teacher
-        )
-      );
-      setIsEditing(false);
-    } else {
-      // Add new teacher
-      setTeachers([...teachers, { ...formData, id: Date.now() }]);
+    try {
+      if (isEditing) {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: 'Do you want to update this teacher?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, update it!',
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            const response = await axios.put(
+              `http://localhost:5000/api/teachers/${formData.id}`,
+              formData
+            );
+            if (response.status === 200) {
+              Swal.fire('Updated!', 'Teacher updated successfully.', 'success');
+              setIsEditing(false);
+              setFormData({ id: '', name: '', subject: '' });
+              fetchTeachers();
+            }
+          }
+        });
+      } else {
+        const response = await axios.post('http://localhost:5000/api/teachers', formData);
+        if (response.status === 201) {
+          Swal.fire('Added!', 'New teacher added successfully!', 'success');
+          setFormData({ id: '', name: '', subject: '' });
+          fetchTeachers();
+        }
+      }
+    } catch (error) {
+      console.error('Error adding/updating teacher:', error);
+      Swal.fire('Error!', 'Something went wrong.', 'error');
     }
-    setFormData({ id: '', name: '', subject: '' });
   };
 
   const handleEdit = (teacher) => {
-    setFormData(teacher);
+    setFormData({
+      id: teacher._id,
+      name: teacher.name,
+      subject: teacher.subject,
+    });
     setIsEditing(true);
   };
 
-  const handleDelete = (id) => {
-    setTeachers(teachers.filter((teacher) => teacher.id !== id));
+  const handleDelete = async (id) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you really want to delete this teacher?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(`http://localhost:5000/api/teachers/${id}`);
+          setTeachers((prevTeachers) => prevTeachers.filter((teacher) => teacher._id !== id));
+          Swal.fire('Deleted!', 'The teacher has been deleted.', 'success');
+        } catch (error) {
+          console.error('Error deleting teacher:', error);
+          Swal.fire('Error!', 'Failed to delete the teacher.', 'error');
+        }
+      }
+    });
   };
 
   return (
@@ -74,14 +138,12 @@ const Teachers = () => {
         </thead>
         <tbody>
           {teachers.map((teacher) => (
-            <tr key={teacher.id}>
+            <tr key={teacher._id}>
               <td>{teacher.name}</td>
               <td>{teacher.subject}</td>
               <td>
                 <button onClick={() => handleEdit(teacher)}>Edit</button>
-                <button onClick={() => handleDelete(teacher.id)}>
-                  Delete
-                </button>
+                <button onClick={() => handleDelete(teacher._id)}>Delete</button>
               </td>
             </tr>
           ))}
