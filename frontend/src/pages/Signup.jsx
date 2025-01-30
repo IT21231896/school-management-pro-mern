@@ -22,7 +22,6 @@ const Signup = () => {
     setError('');
     setLoading(true);
 
-    // Basic validation
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       setLoading(false);
@@ -37,7 +36,7 @@ const Signup = () => {
       });
       console.log(response.data);
       alert('Admin registered successfully!');
-      navigate('/login'); // Redirect to login page after successful signup
+      navigate('/login');
     } catch (error) {
       console.error(error);
       setError(error.response?.data?.message || 'Registration failed!');
@@ -47,51 +46,57 @@ const Signup = () => {
   };
 
   return (
-    <div className="signup-container">
-      <h2>Admin Signup</h2>
-      {error && <p className="error-message">{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          minLength="6"
-          required
-        />
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirm Password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          minLength="6"
-          required
-        />
-        <button type="submit" disabled={loading}>
-          {loading ? 'Signing Up...' : 'Sign Up'}
-        </button>
-      </form>
-      <p>
-        Already have an account? <Link to="/login">Login</Link>
-      </p>
+    <div className="auth-wrapper">
+      <div className="auth-box">
+        <h2 className="auth-title">Admin Signup</h2>
+        {error && <p className="auth-error">{error}</p>}
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            value={formData.name}
+            onChange={handleChange}
+            className="auth-input"
+            required
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email Address"
+            value={formData.email}
+            onChange={handleChange}
+            className="auth-input"
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            className="auth-input"
+            minLength="6"
+            required
+          />
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            className="auth-input"
+            minLength="6"
+            required
+          />
+          <button type="submit" className="auth-button" disabled={loading}>
+            {loading ? 'Signing Up...' : 'Sign Up'}
+          </button>
+        </form>
+        <p className="auth-footer">
+          Already have an account? <Link to="/login" className="auth-link">Login</Link>
+        </p>
+      </div>
     </div>
   );
 };
