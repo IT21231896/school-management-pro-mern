@@ -44,6 +44,13 @@
   color: #2c3e50;
 }
 
+
+.sidebar nav ul li a.active {
+  background-color: #1abc9c; /* Active button background color */
+  color: white; /* Active button text color */
+  border-radius: 4px; /* Optional: Add rounded corners */
+}
+
 .sidebar nav ul li a svg {
   margin-right: 10px;
 }
